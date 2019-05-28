@@ -46,6 +46,11 @@ sub open_spreadsheet {
 =head1 DESCRIPTION
 
 
+=head1 FUNCTIONS
+
+=head2 open_spreadsheet
+
+
 =head1 SEE ALSO
 
 C<Browser::Open> to open a URL in a browser.
