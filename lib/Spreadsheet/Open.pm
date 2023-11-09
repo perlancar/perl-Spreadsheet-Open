@@ -1,8 +1,5 @@
 package Spreadsheet::Open;
 
-# DATE
-# VERSION
-
 use strict;
 use warnings;
 use Log::ger;
@@ -10,14 +7,23 @@ use Log::ger;
 use File::Which;
 
 use Exporter qw(import);
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
 our @EXPORT_OK = qw(open_spreadsheet);
+
+my @libreoffice_versions = qw(
+                                 7.5 7.4 7.3 7.2 7.1 7.0
+                                 6.4 6.3 6.2 6.1
+                         );
 
 my @known_commands = (
     # [os, program, params]
     ['', 'libreoffice', ['--calc']],
-    ['', 'libreoffice6.2', ['--calc']],
-    ['', 'libreoffice6.1', ['--calc']],
-    ['', 'xdg-open', []],
+    (map { ['', "libreoffice$_", ['--calc']] } @libreoffice_versions }),
 );
 
 sub open_spreadsheet {
@@ -31,6 +37,9 @@ sub open_spreadsheet {
             $path, $which;
         return system($which, @{ $e->[2] }, $path);
     }
+
+    require Desktop::Open;
+    return Desktop::Open($path);
 }
 
 1;
@@ -49,6 +58,15 @@ sub open_spreadsheet {
 =head1 FUNCTIONS
 
 =head2 open_spreadsheet
+
+Usage:
+
+ $status = open_spreadsheet($path);
+
+Try a few programs to open a spreadsheet. Currently, in order, LibreOffice (in
+decreasing order of version), then failing that, L<Desktop::Open>
+
+C<$ok> is what returned by C<system()> or Desktop::Open.
 
 
 =head1 SEE ALSO
